@@ -12,6 +12,7 @@
                 <th>Content</th>
                 <th>Notation</th>
                 <th>Destination</th>
+                <th>Image</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -22,6 +23,7 @@
                 <td>{{ review.content }}</td>
                 <td>{{ review.notation }}</td>
                 <td>{{ review.destination }}</td>
+                <td>{{ review.imageFile }}</td>
                 <td>
                     <a href="{{ path('app_review_show', {'id': review.id}) }}">show</a>
                     <a href="{{ path('app_review_edit', {'id': review.id}) }}">edit</a>

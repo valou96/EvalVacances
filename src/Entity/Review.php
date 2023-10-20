@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use App\Repository\ReviewRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
 {
@@ -25,13 +27,52 @@ class Review
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     private ?Destination $destination = null;
 
-    #[ORM\Column(length: 255)]
+    #[Vich\UploadableField(mapping: 'products', fileNameProperty: 'imageName', size: 'imageSize')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(nullable: true)]
     private ?string $imageName = null;
 
-    public function getId(): ?int
+    #[ORM\Column(nullable: true)]
+    private ?int $imageSize = null;
+
+
+
+    public function setImageFile(?File $imageFile = null): void
     {
-        return $this->id;
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageSize(?int $imageSize): void
+    {
+        $this->imageSize = $imageSize;
+    }
+
+    public function getImageSize(): ?int
+    {
+        return $this->imageSize;
+    }
+
 
     public function getContent(): ?string
     {
@@ -43,6 +84,11 @@ class Review
         $this->content = $content;
 
         return $this;
+    }
+
+    public function getid(): ?string
+    {
+        return $this->notation;
     }
 
     public function getNotation(): ?string
@@ -77,18 +123,6 @@ class Review
     public function setDestination(?Destination $destination): static
     {
         $this->destination = $destination;
-
-        return $this;
-    }
-
-    public function getImageName(): ?string
-    {
-        return $this->imageName;
-    }
-
-    public function setImageName(string $imageName): static
-    {
-        $this->imageName = $imageName;
 
         return $this;
     }
